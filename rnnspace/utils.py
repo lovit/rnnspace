@@ -5,6 +5,27 @@ import torch
 installpath = os.path.sep.join(
     os.path.dirname(os.path.realpath(__file__)).split(os.path.sep)[:-1])
 
+def correct(sent, vocab_to_idx, model):
+    """
+    :param sent: str
+        Input sentence
+    :param vocab_to_idx: dict
+        Mapper from character to index
+    :param model: torch.nn.Module
+        Trained space correction model
+
+    It returns
+    ----------
+    sent_ : str
+        Space corrected sentence
+    """
+
+    x, y = sent_to_xy(sent, vocab_to_idx)
+    tags = torch.argmax(model(x), dim=1).numpy()
+    chars = sent.replace(' ','')
+    sent_ = ''.join([c if t == 0 else (c + ' ') for c, t in zip(chars, tags)])
+    return sent_
+
 def space_tag(sent, nonspace=0, space=1):
     """
     :param sent: str
