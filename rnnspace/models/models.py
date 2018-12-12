@@ -39,7 +39,7 @@ class LSTMSpace(nn.Module):
 
 class GRUSpace(nn.Module):
 
-    def __init__(self, eembedding_dim, hidden_dim, vocab_size, tagset_size,
+    def __init__(self, embedding_dim, hidden_dim, vocab_size, tagset_size,
         num_layers=1, bias=True, dropout=0, bidirectional=False):
 
         assert 0 <= dropout < 1
