@@ -45,7 +45,7 @@ def train(model, loss_func, optimizer, X, Y, use_gpu=True, epochs=100):
                 loss_value = loss.cpu().data.numpy()
             else:
                 loss_value = loss.data.numpy()            
-            print('epoch = {}, loss = {:.5}'.format(epoch, loss_value))
+            print('\repoch = {}, loss = {:.5}'.format(epoch, loss_value))
 
     if is_cuda:
         model = model.cpu()
