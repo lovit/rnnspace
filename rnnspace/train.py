@@ -1,11 +1,11 @@
 import time
 
 
-def train(model, loss_func, optimizer, X, Y, use_gpu=True, epochs=100):
+def train(model, loss_function, optimizer, X, Y, use_gpu=True, epochs=100):
     """
     :param model: torch.nn.Module
         Model
-    :param loss_func: loss function
+    :param loss_function: loss function
     :param optimizer: optimizer
     :param X: list of torch.Tensor
         List of input sequences
