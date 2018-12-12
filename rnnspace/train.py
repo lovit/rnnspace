@@ -26,6 +26,9 @@ def train(model, loss_func, optimizer, X, Y, use_gpu=True, epochs=100):
         model = model.cuda()
 
     for epoch in range(epochs):
+
+        t = time.time()
+
         for i, (chars, tags) in enumerate(zip(X, Y)):
             if is_cuda:
                 chars = chars.cuda()
@@ -41,11 +44,13 @@ def train(model, loss_func, optimizer, X, Y, use_gpu=True, epochs=100):
                 print('\repoch = {}, iter = {}'.format(epoch, i), end='')
 
         if (epoch < 10) or (epoch % 100 == 0):
+            t = time.time() - t
             if is_cuda:
                 loss_value = loss.cpu().data.numpy()
             else:
                 loss_value = loss.data.numpy()            
-            print('\repoch = {}, loss = {:.5}'.format(epoch, loss_value))
+            print('\repoch = {}, loss = {:.5}, time={}'.format(
+                epoch, loss_value, time.strftime('%H:%M:%S', time.gmtime(t))))
 
     if is_cuda:
         model = model.cpu()
