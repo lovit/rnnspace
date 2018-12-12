@@ -23,7 +23,7 @@ def correct(sent, vocab_to_idx, model):
     x, y = sent_to_xy(sent, vocab_to_idx)
     tags = torch.argmax(model(x), dim=1).numpy()
     chars = sent.replace(' ','')
-    sent_ = ''.join([c if t == 0 else (c + ' ') for c, t in zip(chars, tags)])
+    sent_ = ''.join([c if t == 0 else (c + ' ') for c, t in zip(chars, tags)]).strip()
     return sent_
 
 def space_tag(sent, nonspace=0, space=1):
