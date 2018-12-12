@@ -22,7 +22,7 @@ X = [] # list of sentence
 Y = [] # list of label
 
 for text in texts:
-    x, y = sent_to_xy(text, _vocab_to_idx)
+    x, y = sent_to_xy(text, char_to_idx)
     X.append(x)
     Y.append(y)
 ```
