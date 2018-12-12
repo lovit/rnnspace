@@ -75,7 +75,7 @@ def to_idx(item, mapper, unknown=None):
         unknown = len(mapper)
     return mapper.get(item, unknown)
 
-def to_item(idx, idx_to_vocab, unknown=None):
+def to_item(idx, idx_to_vocab, unknown='Unk'):
     """
     :param idx: int
         Index of item
@@ -83,6 +83,7 @@ def to_item(idx, idx_to_vocab, unknown=None):
         Mapper from index to item object
     :param unknown: Object
         Return value when the idx is outbound of idx_to_vocab
+        Default is 'Unk', str type
 
     It returns
     ----------
