@@ -30,12 +30,13 @@ for text in texts:
 To train model,
 
 ```python
+import torch.nn as nn
 from rnnspace.models import LSTMSpace
 
 # set parameters
 embedding_dim = 16
 hidden_dim = 64
-vocab_size = len(idx_to_vocab) + 1 # for unknown character
+vocab_size = len(idx_to_char) + 1 # for unknown character
 tagset_size = 2
 num_threads = 3
 
