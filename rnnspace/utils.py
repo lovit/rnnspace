@@ -5,11 +5,11 @@ import torch
 installpath = os.path.sep.join(
     os.path.dirname(os.path.realpath(__file__)).split(os.path.sep)[:-1])
 
-def correct(sent, vocab_to_idx, model):
+def correct(sent, char_to_idx, model):
     """
     :param sent: str
         Input sentence
-    :param vocab_to_idx: dict
+    :param char_to_idx: dict
         Mapper from character to index
     :param model: torch.nn.Module
         Trained space correction model
@@ -20,7 +20,7 @@ def correct(sent, vocab_to_idx, model):
         Space corrected sentence
     """
 
-    x, y = sent_to_xy(sent, vocab_to_idx)
+    x, y = sent_to_xy(sent, char_to_idx)
     tags = torch.argmax(model(x), dim=1).numpy()
     chars = sent.replace(' ','')
     sent_ = ''.join([c if t == 0 else (c + ' ') for c, t in zip(chars, tags)]).strip()
@@ -68,15 +68,15 @@ def scan_vocabulary(texts, min_count=1):
 
     It returns
     ----------
-    idx_to_vocab: list of str
-    vocab_to_idx: dict, str to int
+    idx_to_char: list of str
+    char_to_idx: dict, str to int
     """
 
     counter = Counter(vocab for text in texts for vocab in text)
     counter = {vocab:count for vocab, count in counter.items() if count >=min_count}
-    idx_to_vocab = [vocab for vocab in sorted(counter, key=lambda x:-counter[x])]
-    vocab_to_idx = {vocab:idx for idx, vocab in enumerate(idx_to_vocab)}
-    return idx_to_vocab, vocab_to_idx
+    idx_to_char = [vocab for vocab in sorted(counter, key=lambda x:-counter[x])]
+    char_to_idx = {vocab:idx for idx, vocab in enumerate(idx_to_char)}
+    return idx_to_char, char_to_idx
 
 def to_idx(item, mapper, unknown=None):
     """
@@ -97,14 +97,14 @@ def to_idx(item, mapper, unknown=None):
         unknown = len(mapper)
     return mapper.get(item, unknown)
 
-def to_item(idx, idx_to_vocab, unknown='Unk'):
+def to_item(idx, idx_to_char, unknown='Unk'):
     """
     :param idx: int
         Index of item
-    :param idx_to_vocab: list of Object
+    :param idx_to_char: list of Object
         Mapper from index to item object
     :param unknown: Object
-        Return value when the idx is outbound of idx_to_vocab
+        Return value when the idx is outbound of idx_to_char
         Default is 'Unk', str type
 
     It returns
@@ -113,15 +113,15 @@ def to_item(idx, idx_to_vocab, unknown='Unk'):
         Item that corresponding idx
     """
 
-    if 0 <= idx < len(idx_to_vocab):
-        return idx_to_vocab[idx]
+    if 0 <= idx < len(idx_to_char):
+        return idx_to_char[idx]
     return unknown
 
-def sent_to_xy(sent, vocab_to_idx):
+def sent_to_xy(sent, char_to_idx):
     """
     :param sent: str
         Input sentence
-    :param vocab_to_idx: dict
+    :param char_to_idx: dict
         Dictionary from character to index
 
     It returns
@@ -134,6 +134,6 @@ def sent_to_xy(sent, vocab_to_idx):
 
     chars, tags = space_tag(sent)
     idxs = torch.LongTensor(
-        [to_idx(c, vocab_to_idx) for c in chars])
+        [to_idx(c, char_to_idx) for c in chars])
     tags = torch.LongTensor(tags)
     return idxs, tags

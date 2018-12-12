@@ -17,6 +17,6 @@ def load_lalaland_train_data():
         params = pickle.load(f)
     images = params['images']
     labels = params['labels']
-    idx_to_vocab = params['idx_to_vocab']
+    idx_to_char = params['idx_to_char']
     idx_to_tag = params['idx_to_tag']
-    return images, labels, idx_to_vocab, idx_to_tag
+    return images, labels, idx_to_char, idx_to_tag
