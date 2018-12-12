@@ -5,12 +5,20 @@ import torch.nn.functional as F
 
 class LSTMSpace(nn.Module):
 
-    def __init__(self, embedding_dim, hidden_dim, vocab_size, tagset_size, bidirectional=False):
+    def __init__(self, embedding_dim, hidden_dim, vocab_size, tagset_size,
+        num_layers=1, bias=True, dropout=0, bidirectional=False):
+
+        assert 0 <= dropout < 1
+
         super().__init__()
         self.hidden_dim = hidden_dim
 
         self.embeddings = nn.Embedding(vocab_size, embedding_dim)
-        self.lstm = nn.LSTM(embedding_dim, hidden_dim, bidirectional=bidirectional)
+        self.lstm = nn.LSTM(embedding_dim, hidden_dim,
+            num_layers = num_layers,
+            bias = bias,
+            dropout = dropout,
+            bidirectional=bidirectional)
         self.hidden2tag = nn.Linear(hidden_dim, tagset_size)
         self.hidden = self.init_hidden() # hidden, cell
 
