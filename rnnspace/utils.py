@@ -1,5 +1,6 @@
 from collections import Counter
 import os
+import torch
 
 installpath = os.path.sep.join(
     os.path.dirname(os.path.realpath(__file__)).split(os.path.sep)[:-1])
@@ -94,3 +95,24 @@ def to_item(idx, idx_to_vocab, unknown='Unk'):
     if 0 <= idx < len(idx_to_vocab):
         return idx_to_vocab[idx]
     return unknown
+
+def sent_to_xy(sent, vocab_to_idx):
+    """
+    :param sent: str
+        Input sentence
+    :param vocab_to_idx: dict
+        Dictionary from character to index
+
+    It returns
+    ----------
+    idxs : torch.LongTensor
+        Encoded character sequence
+    tags : torch.LongTensor
+        Space tag sequence
+    """
+
+    chars, tags = space_tag(sent)
+    idxs = torch.LongTensor(
+        [to_idx(c, vocab_to_idx) for c in chars])
+    tags = torch.LongTensor(tags)
+    return idxs, tags
