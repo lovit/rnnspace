@@ -1,3 +1,6 @@
+import time
+
+
 def train(model, loss_func, optimizer, X, Y, use_gpu=True, epochs=100):
     """
     :param model: torch.nn.Module
