@@ -10,6 +10,8 @@ class LSTMSpace(nn.Module):
 
         assert 0 <= dropout < 1
 
+        num_layers = 1 # ignore
+
         super().__init__()
         self.hidden_dim = hidden_dim
         self.num_layers = num_layers
@@ -45,6 +47,8 @@ class GRUSpace(nn.Module):
         num_layers=1, bias=True, dropout=0, bidirectional=False):
 
         assert 0 <= dropout < 1
+
+        num_layers = 1 # ignore
 
         super().__init__()
         self.hidden_dim = hidden_dim
