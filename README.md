@@ -39,9 +39,10 @@ hidden_dim = 64
 vocab_size = len(idx_to_char) + 1 # for unknown character
 tagset_size = 2
 num_threads = 3
+bidirectional = True
 
 # model
-model = LSTMSpace(embedding_dim, hidden_dim, vocab_size, tagset_size)
+model = LSTMSpace(embedding_dim, hidden_dim, vocab_size, tagset_size, bidirectional=bidirectional)
 # loss function
 loss_function = nn.NLLLoss()
 # optimization
