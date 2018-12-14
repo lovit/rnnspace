@@ -1,0 +1,316 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>Introduction · GitBook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        
+        
+        
+    
+    <link rel="stylesheet" href="gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="post/data/" />
+    
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter active" data-level="1.1" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    Introduction
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="post/data/">
+            
+                <a href="post/data/">
+            
+                    
+                    Data
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1" data-path="post/data/helloworld.html">
+            
+                <a href="post/data/helloworld.html">
+            
+                    
+                    hello world
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href="." >Introduction</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="recurrent-neural-network-rnn-based-space-correction">Recurrent Neural Network (RNN) based Space Correction</h1>
+<p>Comparison with RNN, LSTM, GRU, BiLSTM, BiLSTM-CRF</p>
+<h2 id="usage">Usage</h2>
+<p>For training, first scan characters and create character - index encoder</p>
+<pre><code class="lang-python"><span class="hljs-keyword">from</span> rnnspace <span class="hljs-keyword">import</span> scan_vocabulary
+
+texts = [<span class="hljs-string">&apos;list of str type&apos;</span>, <span class="hljs-string">&apos;sentence example&apos;</span>]
+idx_to_char, char_to_idx = scan_vocabulary(texts, min_count=<span class="hljs-number">1</span>)
+</code></pre>
+<p>To prepare trainable data, encode character sequence to index sequence using sent_to_xy function.</p>
+<pre><code class="lang-python"><span class="hljs-keyword">from</span> rnnspace <span class="hljs-keyword">import</span> sent_to_xy
+
+X = [] <span class="hljs-comment"># list of sentence</span>
+Y = [] <span class="hljs-comment"># list of label</span>
+
+<span class="hljs-keyword">for</span> text <span class="hljs-keyword">in</span> texts:
+    x, y = sent_to_xy(text, char_to_idx)
+    X.append(x)
+    Y.append(y)
+</code></pre>
+<p>To train model,</p>
+<pre><code class="lang-python"><span class="hljs-keyword">import</span> torch.nn <span class="hljs-keyword">as</span> nn
+<span class="hljs-keyword">from</span> rnnspace.models <span class="hljs-keyword">import</span> LSTMSpace
+
+<span class="hljs-comment"># set parameters</span>
+embedding_dim = <span class="hljs-number">16</span>
+hidden_dim = <span class="hljs-number">64</span>
+vocab_size = len(idx_to_char) + <span class="hljs-number">1</span> <span class="hljs-comment"># for unknown character</span>
+tagset_size = <span class="hljs-number">2</span>
+num_threads = <span class="hljs-number">3</span>
+bidirectional = <span class="hljs-keyword">True</span>
+
+<span class="hljs-comment"># model</span>
+model = LSTMSpace(embedding_dim, hidden_dim, vocab_size, tagset_size, bidirectional=bidirectional)
+<span class="hljs-comment"># loss function</span>
+loss_function = nn.NLLLoss()
+<span class="hljs-comment"># optimization</span>
+optimizer = optim.SGD(model.parameters(), lr=<span class="hljs-number">0.1</span>)
+
+<span class="hljs-comment"># set max num of threads</span>
+torch.set_num_threads(num_threads)
+
+<span class="hljs-comment"># train</span>
+model = train(model, loss_function, optimizer, X, Y, epochs=<span class="hljs-number">50</span>, use_gpu=<span class="hljs-keyword">False</span>)
+</code></pre>
+<p>You can save trained model with pickle</p>
+<pre><code class="lang-python"><span class="hljs-keyword">import</span> pickle
+
+path = <span class="hljs-string">&apos;modelpath&apos;</span>
+<span class="hljs-keyword">with</span> open(path, <span class="hljs-string">&apos;wb&apos;</span>) <span class="hljs-keyword">as</span> f:
+    pickle.dump(model, f)
+</code></pre>
+<p>For correction</p>
+<pre><code class="lang-python"><span class="hljs-keyword">from</span> rnnspace <span class="hljs-keyword">import</span> correct
+
+sent = <span class="hljs-string">&apos;&#xC774;&#xAC74;&#xC9C4;&#xC9DC;&#xC88B;&#xC740;&#xC601;&#xD654; &#xB77C;&#xB77C;&#xB79C;&#xB4DC;&#xC9C4;&#xC9DC;&#xC88B;&#xC740;&#xC601;&#xD654;&apos;</span>
+print(correct(sent, char_to_idx, model))
+</code></pre>
+<pre><code>&apos;&#xC774;&#xAC74; &#xC9C4;&#xC9DC; &#xC88B;&#xC740; &#xC601;&#xD654; &#xB77C;&#xB77C;&#xB79C;&#xB4DC; &#xC9C4;&#xC9DC; &#xC88B;&#xC740;&#xC601;&#xD654;&apos;
+</code></pre><h2 id="memo">Memo</h2>
+<p><a href="https://discuss.pytorch.org/t/access-gates-of-lstm-gru/12399/4" target="_blank">access gate value</a></p>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                
+                <a href="post/data/" class="navigation navigation-next navigation-unique" aria-label="Next page: Data">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"Introduction","level":"1.1","depth":1,"next":{"title":"Data","level":"1.2","depth":1,"path":"post/data/README.md","ref":"post/data/README.md","articles":[{"title":"hello world","level":"1.2.1","depth":2,"path":"post/data/helloworld.md","ref":"post/data/helloworld.md","articles":[]}]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"README.md","mtime":"2018-12-14T14:54:42.809Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-12-14T15:13:33.403Z"},"basePath":".","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="gitbook/gitbook.js"></script>
+    <script src="gitbook/theme.js"></script>
+    
+        
+        <script src="gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+
