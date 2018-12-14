@@ -13,3 +13,10 @@ tmp/
 
 # Jupyter notebook
 .ipynb_checkpoints/
+
+# Book build output
+_book
+# Dependency packages
+node_modules
+# Jupyter Notebook checkpoint
+.ipynb_checkpoints
